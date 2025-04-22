@@ -1,0 +1,36 @@
+name : Compilación del documento .tex de la carpeta Informes
+
+on: 
+  push: 
+  branches:
+  - main # Detecta cambios en el repositorio principal para ejecutar el código
+
+jobs:
+  release_cv:
+  name: "Ejecucion Informe LaTex"
+  runs-on: ubuntu-latest
+
+  steps:
+   name: "Checkout master"
+   uses: actions/checkout@v1
+
+   name: "Compilacion del Informe"
+   uses: xu-cheng/latex-action@master
+   with: 
+     root_file: Informes/Informe01.tex
+
+   name: "Revision del PDF"
+   run: |
+     file Informe01.pdf | grep -q 'PDF'
+
+   name: "Carga del PDF a una URL fija"
+   uses: "marvinpinto/action-automatic-releases@latest"
+   with: 
+     repo_token: "{{ secrets.PERSONAL_ACCESS_TOKEN}}"
+     automatic_release_tag: "latest"
+     prerelease: true
+     title: "Carga"
+     files: |
+       Informe01.pdf
+    
+  
