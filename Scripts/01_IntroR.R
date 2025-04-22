@@ -2,7 +2,7 @@
 ############            Introducción al Lenguaje R            ############
 ##########################################################################
 
-# Configuraciones iniciales
+# Configuraciones iniciales ----
 
 # Eliminación de la notación científica
 5/1230000
@@ -26,6 +26,26 @@ if(!file.exists("~/.Rprofile")){
 } else {
   file.edit("~/.Rprofile")
 }
+
+# Creación de objetos ----
+# En el Lenguaje R existen varios tipos de objetos que permiten almacenar información importante para posteriores análisis
+
+# Vectores
+c(2,5,8,12)
+sum(c(2,5,8,12)) # Suma de los elementos del vector
+mean(c(2,5,8,12)) # Valor Promedio de los elementos almacenados en el vector
+
+x <- c(2,5,8,12) # asignación de un nombre para el vector
+sum(x)
+mean(x) # Se realiza el llamado al vector por su nombre o alias con ello se evita reescribir el vector
+
+x + 2 # Suma de un vector con un escalar, se aplica el reciclaje de elementos
+
+
+
+
+
+
 
 
 
