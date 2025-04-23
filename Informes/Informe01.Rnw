@@ -25,7 +25,7 @@ Azuay & Cuenca\\ \hline
 
 Otro párrafo de prueba.
 
-<<chunk01, background = '#f1fdf1'>>=
+<<chunk01>>=
 3 + 5 - 2
 rnorm(5, mean = 12, sd = 4)
 @
