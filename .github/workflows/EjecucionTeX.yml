@@ -1,4 +1,4 @@
-name : "Compilación del documento .tex de la carpeta Informes"
+name: "Compilación del documento .tex de la carpeta Informes"
 
 on: 
   push: 
