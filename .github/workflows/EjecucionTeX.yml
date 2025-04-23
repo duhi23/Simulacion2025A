@@ -5,6 +5,9 @@ on:
     branches:
       - main  # Detecta cambios en la rama main
 
+permissions:
+  contents: write  # Esto da al GITHUB_TOKEN permiso para crear releases, tags, etc
+
 jobs:
   release_cv:
     name: "Ejecución Informe LaTeX"
