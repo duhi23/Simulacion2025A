@@ -1,0 +1,38 @@
+\documentclass[12pt, a4paper]{book}
+\usepackage{amsmath, float}
+
+\title{Primer informe dinámico}
+\author{Diego Huaraca}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+Este es el texto del primer informe automático generado por una Github Actions.\newline
+
+Ahora vamos a probar el código generado para la ejecución automática del primer informe.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}\hline
+\textbf{Provincia} & \textbf{Capital}\\ \hline
+Pichincha & Quito\\ \hline
+Guayas & Guayaquil\\ \hline
+Azuay & Cuenca\\ \hline
+\end{tabular}
+\end{table}
+
+Otro párrafo de prueba.
+
+<<chunk01>>=
+3 + 5 - 2
+rnorm(5, mean = 12, sd = 4)
+@
+
+
+
+
+
+
+\end{document}
