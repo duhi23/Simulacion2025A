@@ -66,16 +66,15 @@ fluidPage(
     tabPanel("Integrales",
              sidebarLayout(
                sidebarPanel(
-                 textInput("funcion", "Ingrese la funciòn a integrar:"),
-                 sliderInput("intervalo",
-                             "Ingrese el valor de a y b:",
-                             min = -10,
-                             max = 10,
-                             value = c(0,1)),
+                 textInput("funcion", "Ingrese la funciòn a integrar:", value = "1-x"),
+                 numericInput("lim_inf", "Límite inferior del intervalo:", value = 0),
+                 numericInput("lim_sup", "Límite superior del intervalo:", value = 1),
                  radioButtons("metodo", "Seleccione el mètodo para generar los nùmeros aleatorios:", 
                               c("Congruencial Multiplicativo", "Congruencial Mixto"))
                ),
                mainPanel(
+                 h4("Gráfica de la funcion a integrar:"),
+                 plotOutput("graf_fun01"),
                  h4("Aproximaciòn:"),
                  plotOutput("graf_aprox01")
                )

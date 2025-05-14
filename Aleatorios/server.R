@@ -45,6 +45,11 @@ function(input, output, session) {
         row_spec(0, background = "#1D3889", color = "#ffffff") %>% scroll_box(width = "100%", height = "200px")
     }
     
+    output$graf_fun01 <- renderPlot({
+    
+      
+    })
+    
     output$graf_aprox01 <- renderPlot({
       secuencia <- seq(100, 10000, by = 200)
       f <- function(x) eval(parse(text = input$funcion))
