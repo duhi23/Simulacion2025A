@@ -31,38 +31,36 @@ fluidPage(
                         "Cantidad de números a generar:",
                         min = 1,
                         max = 200,
-                        value = 30)
+                        value = 30),
+            actionButton("mostrar", "Mostrar resultados", icon("eye"))
         ),
 
         # Show a plot of the generated distribution
         mainPanel(
-          h4("Tabla de resultados - Método Congruencial Multiplicativo:"),
-          br(),
-            tableOutput("tabla"),
-          br(),
-          h4("Tabla de resultados - Método Congruencial Mixto:"),
-          br(),
-          br(), # Aqui va la segunda tabla
-          br(),
-          h4("Gráfico:"),
-          fluidRow(
-            column(width = 2,
-                   numericInput("barras", "Número de barras:", value = 10, min = 2, max = 20),
-                   ),
-            column(width = 5,
-                   h5("Método 1")
-                   ),
-            column(width = 5,
-                   h5("Método 2")
-                   )
-          )
-          
+          conditionalPanel(condition = "input.mostrar!=0",
+                           h4("Tabla de resultados - Método Congruencial Multiplicativo:"),
+                           br(),
+                           tableOutput("tabla"),
+                           br(),
+                           h4("Tabla de resultados - Método Congruencial Mixto:"),
+                           br(),
+                           br(), # Aqui va la segunda tabla
+                           br(),
+                           h4("Gráfico:"),
+                           fluidRow(
+                             column(width = 2,
+                                    numericInput("barras", "Número de barras:", value = 10, min = 2, max = 20),
+                             ),
+                             column(width = 5,
+                                    h5("Método 1")
+                             ),
+                             column(width = 5,
+                                    h5("Método 2")
+                             )
+                           ))
         )
     )
     ),
-    tabPanel("Resultados",
-             h1("Aqui se muestran los resultados")
-             ),
     tabPanel("Integrales",
              sidebarLayout(
                sidebarPanel(
@@ -70,13 +68,16 @@ fluidPage(
                  numericInput("lim_inf", "Límite inferior del intervalo:", value = 0),
                  numericInput("lim_sup", "Límite superior del intervalo:", value = 1),
                  radioButtons("metodo", "Seleccione el mètodo para generar los nùmeros aleatorios:", 
-                              c("Congruencial Multiplicativo", "Congruencial Mixto"))
+                              c("Congruencial Multiplicativo", "Congruencial Mixto")),
+                 actionButton("calcular", "Calcular Àrea", style = "color: #FFFFFF; background-color: #F5426C; border-color: #9932CC")
                ),
                mainPanel(
-                 h4("Gráfica de la funcion a integrar:"),
-                 plotOutput("graf_fun01"),
-                 h4("Aproximaciòn:"),
-                 plotOutput("graf_aprox01")
+                 conditionalPanel(condition = "input.calcular!=0",
+                                  h4("Gráfica de la funcion a integrar:"),
+                                  plotOutput("graf_fun01"),
+                                  h4("Aproximaciòn:"),
+                                  plotOutput("graf_aprox01")
+                 )
                )
              )
              )
