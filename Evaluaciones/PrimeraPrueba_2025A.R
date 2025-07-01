@@ -6,6 +6,8 @@ medios <- function(x0, k){ # Función que recibe una semilla y la cantidad de d�
       return(floor((x0^2 - floor(x0^2/10^(2*k - k/2))*10^(2*k - k/2))/10^(k/2)))
 }
 
+medios(1223, 4)
+
 c_medios <- function(x0, k, n){ # Función que recibe una semilla, la cantidad de dígitos (par) a considerar y la cantidad de números pseudolaeatorios
       x <- numeric(n)
       for(i in 1:n){
@@ -20,11 +22,15 @@ c_medios <- function(x0, k, n){ # Función que recibe una semilla, la cantidad d
 
 medios(1223, 4)
 c_medios(1223, 4, 50)
+c_medios(1234, 4, 100)
 
 # Aproximación de la integral empleando el método de MonteCarlo ----
 fx <- function(x){ # Función Original
       return(3*x*(1+x^2)^(-2))
 }
+fx(1)
+fx(10)
+fx(100)
 
 plot(seq(pi,10, by=1), fx(seq(pi,10, by=1)), type = "l", col = "red") # La función tiende a cero a medida que x aumenta
 
@@ -34,6 +40,7 @@ hy <- function(y){ # Función transformada
       return((b-a)*fx(a + (b-a)*y))
 }
 
+hist(c_medios(1223, 4, 100))
 mean(hy(c_medios(1223, 4, 100))) # Evaluación de la función transformada
 integrate(f = fx, lower = pi, upper = 100) # Evaluación de la integral original
 
@@ -56,7 +63,7 @@ g_ar <- function(x, lambda){
 }
 
 h_ar <- function(x, lambda){
-      return(ifelse(g_ar(x, lambda) == 0, Inf, f_ar(x)/g_ar(x, lambda)))
+      return(ifelse(g_ar(x, lambda) == 0, -Inf, f_ar(x)/g_ar(x, lambda)))
 }
 
 
@@ -69,7 +76,7 @@ f_lambda <- function(vlambda){
       return(sum(!is.na(X))/1000) # Porcentaje de aceptación
 }
 
-plot(seq(0.01, 1, by=0.01), sapply(seq(0.01, 1, by=0.01), function(x){f_lambda(x)}), type = "l", col = "blue")
+plot(seq(0.01, 5, by=0.01), sapply(seq(0.01, 5, by=0.01), function(x){f_lambda(x)}), type = "l", col = "blue")
 
 f_var <- function(n){
       vlambda <- 2/3
@@ -89,9 +96,14 @@ monto <- function(n=1){
       return(sample(c(500, 1000, 2500, 5000), size = n, replace = TRUE, prob = c(0.35, 0.30, 0.25, 0.10)))
 }
 
+monto(n=5)
+
 prima <- function(n){
       return(sample(c(200, 400, 600, 800, 1000), size = n, replace = TRUE, prob = c(0.04, 0.42, 0.29, 0.18, 0.07)))
 }
+
+prima(n=4)
+
 siniestro <- function(n, casos){
       return(ifelse(1:n %in% sample(1:n, replace = FALSE, size = casos), monto() + 180, 0))
 }
@@ -100,7 +112,7 @@ siniestro(100, 10)
 
 # Generación de tabla de resultados por mes
 Tabla <- function(n, vlambda){
-      Siniestros_mensuales <- rpois(n=12, lambda = vlambda)
+      Siniestros_mensuales <<- rpois(n=12, lambda = vlambda)
       res <- data.table(Poliza = 1:n,
                  Prima = prima(n),
                  Sin_Enero = siniestro(n, Siniestros_mensuales[1]),
@@ -119,6 +131,9 @@ Tabla <- function(n, vlambda){
 }
 
 T1 <- Tabla(2800, vlambda = 2.8)
+T1[,list(Siniestros_Ene = sum(ifelse(Sin_Enero > 0, 1, 0)),
+         Siniestros_Feb = sum(ifelse(Sin_Febrero > 0, 1, 0)),
+         Siniestros_Mar = sum(ifelse(Sin_Marzo > 0, 1, 0)))]
 T1[, Total_Siniestros := rowSums(.SD), .SDcols = patterns("^Sin_")]
 T1[, Perdida_Ganancia := Prima - Total_Siniestros]
 # Resultado económico 2800 pólizas
@@ -126,6 +141,7 @@ T1[,list(Perdida_Ganancia = sum(Perdida_Ganancia))]
 
 # Porcentaje de asegurados que generan pérdida
 T1[, Marca := ifelse(Perdida_Ganancia < 0, 1, 0)]
+T1[,.N,by=Marca]
 T1[,list(Porcentaje = mean(Marca))]
 
 
@@ -139,8 +155,6 @@ T2[,list(Perdida_Ganancia = sum(Perdida_Ganancia))]
 # Porcentaje de asegurados que generan pérdida
 T2[, Marca := ifelse(Perdida_Ganancia < 0, 1, 0)]
 T2[,list(Porcentaje = mean(Marca))]
-
-
 
 
 

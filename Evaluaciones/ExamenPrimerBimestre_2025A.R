@@ -15,6 +15,8 @@ atencion <- function(){
 }
 atencion()
 
+quantile(sapply(1:1000, function(x){atencion()}), probs = seq(0,1,by=0.01))
+
 total_atenciones <- function(n){
       if(n == 0){
             return(0)
@@ -23,7 +25,7 @@ total_atenciones <- function(n){
       }
 }
 
-total_atenciones(1)
+total_atenciones(10)
 
 suma_asegurada <- function(n){
       return(sample(c(120000, 80000, 50000, 30000), size = n, replace = TRUE, prob = c(0.05, 0.15, 0.35, 0.45)))
@@ -43,6 +45,27 @@ prima_anual <- function(val){
       }
 }
 
+# Un escenario
+Tabla <- function(n){
+  res <- data.table(Poliza = 1:n,
+                    Siniestros = siniestros(n),
+                    Deducible = 120,
+                    Suma_Asegurada = suma_asegurada(n))
+  return(res)
+}
+T1 <- Tabla(1400) # Afiliados
+T1[, Total_Gastos := total_atenciones(Siniestros), by = Poliza] 
+T1[, Prima := 1.1*prima_anual(Suma_Asegurada), by = Poliza]
+T1[, Monto_Cubierto := ifelse(Total_Gastos > Deducible, Total_Gastos - Deducible, 0)]
+hist(T1$Monto_Cubierto, breaks = 40, main = "Histograma de Monto Cubierto", 
+     xlab = "Monto Cubierto")
+summary(T1$Monto_Cubierto)
+
+T1[, Ganancia_Perdida := Prima - Monto_Cubierto]
+T1[,list(sum(Ganancia_Perdida))]
+T1[, Marca := ifelse(Monto_Cubierto > 0, 1, 0)]
+T1[,.N,by=Marca]
+
 # Simulación de escenarios
 simu <- function(n, deducible = 120, coef_suma = 1){
       res <- sapply(1:n, function(x){
@@ -61,7 +84,7 @@ simu <- function(n, deducible = 120, coef_suma = 1){
             estadisticas <- T1[,list(Ganancia_Perdida = sum(Ganancia_Perdida), 
                                      Perdidas = sum(ifelse(Ganancia_Perdida < 0, 1, 0)),
                                      Alcanza_Tope = sum(ifelse(Monto_Cubierto > Suma_Asegurada, 1, 0)),
-                                     No_Deducible = sum(ifelse(Monto_Cubierto < Deducible, 1, 0)))]
+                                     No_Deducible = sum(ifelse(Total_Gastos < Deducible, 1, 0)))]
             estadisticas
       })
       return(t(res))
@@ -90,7 +113,7 @@ summary(E2$Prob_Deducible)
 
 
 # Simulación con escenarios en los cuales el deducible se duplica
-E3 <- simu(1000, deducible = 240)
+E3 <- simu(1000, deducible = 300, coef_suma = 0.5)
 E4 <- data.table(Ganancia_Perdida = unlist(E3[,"Ganancia_Perdida"]))
 E4 %>% ggplot(aes(x= Ganancia_Perdida)) + geom_histogram(bins = 30, fill = "blue", color = "black", alpha = 0.7) +
       labs(title = "Distribución de Ganancia/Pérdida", x = "Ganancia/Pérdida", y = "Frecuencia") +
